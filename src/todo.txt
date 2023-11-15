@@ -1,0 +1,21 @@
+- add sqlite 
+
+sqlite structure:
+government: uuid, name, description, imageurl
+party: uuid, name, description, imageurl, governmentIds
+partyMember:  uuid,  name, description, imageurl, partyIds 
+article: uuid, url, date, description, imageUrl, rating
+entityToArticle: enittyId(uuid), articleId(uuid)    - to enable connecting multipl entities to a single article
+ratings: id, ratingName
+
+datetime will be stored as '20050505' always as UTC + 0
+
+- admin page - add a button to connect article to another entity. to enable 1 article to multiple entities. 
+                - like connect an article to multiple persons, multiple parties and governments
+
+
+
+
+- UI:   need to create a button near the article to connect multiple entities to an article. 
+        it will open a popup that will show all connected entities and a delete / add buttons 
+
