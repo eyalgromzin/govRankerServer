@@ -1,10 +1,11 @@
 datetime will be stored as '20050505' always as UTC + 0
 
-- create api methods: 
-        - create government
-        - add party to government
-        - add person to party
-        - add article to person
+- create api methods:  V created , VV created and tested 
+        - create government - V
+        - create party 
+        - create party member 
+        - create article
+        - add article to party member 
         - add article to party
         - add article to government
         - get goverment articles - gets gov uuid, from to date 
@@ -20,7 +21,8 @@ datetime will be stored as '20050505' always as UTC + 0
         - update government name 
         - update government description
         - update government image url
-
+        
+- on app load - get all govs + parties + persons for later usage in autocomplete and selection 
 
 - admin page - add a button to connect article to another entity. to enable 1 article to multiple entities. 
                 - like connect an article to multiple persons, multiple parties and governments
