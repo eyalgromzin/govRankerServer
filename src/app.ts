@@ -1,11 +1,7 @@
-const articleFile = require('./db/article')
-const { createArticleMethods } = articleFile
-const govFile = require('./db/government')
-const { createGovernmentMethods } = govFile
-const partyFile = require('./db/party')
-const { createPartyMethods } = partyFile
-const partyMembersFile = require('./db/partyMember')
-const { createPartyMemberMethods } = partyMembersFile
+const { createArticleMethods } = require('./db/article')
+const { createGovernmentMethods } = require('./db/government')
+const { createPartyMethods } = require('./db/party')
+const { createPartyMemberMethods } = require('./db/partyMember')
 
 
 const express = require('express');
