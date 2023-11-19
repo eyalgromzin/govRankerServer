@@ -1,3 +1,13 @@
+const articleFile = require('./db/article')
+const { createArticleMethods } = articleFile
+const govFile = require('./db/government')
+const { createGovernmentMethods } = govFile
+const partyFile = require('./db/party')
+const { createPartyMethods } = partyFile
+const partyMembersFile = require('./db/partyMember')
+const { createPartyMemberMethods } = partyMembersFile
+
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path'); 
@@ -21,10 +31,10 @@ app.get('/', (req, res) => {
   res.send('Hello World32!')
 })
 
-createArticleMethods(app)
-createGovernmentMethods(app)
-createPartyMethods(app)
-createPartyMemberMethods(app)
+createArticleMethods(app, db)
+createGovernmentMethods(app, db)
+createPartyMethods(app, db)
+createPartyMemberMethods(app, db)
 
 app.listen(port, () => {
   return console.log(`Express is 22 listening at http://localhost:${port}`);

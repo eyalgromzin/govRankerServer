@@ -1,4 +1,4 @@
-const createArticleMethods = (app) => {
+exports.createArticleMethods = (app, db) => {
     // this is article for everyone
     app.post("/addArticle", (req, res) => {
         try {

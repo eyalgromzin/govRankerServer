@@ -1,4 +1,4 @@
-function createPartyMemberMethods(app: any) {
+exports.createPartyMemberMethods = (app, db) => {
     app.post("/partyMember/updatePartyMember", (req, res) => {
         try {
             const { uuid, name, description, imageUrl } = req.body;
@@ -120,4 +120,4 @@ function createPartyMemberMethods(app: any) {
             });
         }
     });
-}
+};

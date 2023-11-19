@@ -1,4 +1,4 @@
-function createPartyMethods(app: any) {
+exports.createPartyMethods = (app, db) => {
     app.post("/party/update", (req, res) => {
         try {
             const { uuid, name, description, imageUrl } = req.body;
@@ -16,13 +16,7 @@ function createPartyMethods(app: any) {
                     });
                 }
 
-                console.log(
-                    "updated party",
-                    uuid,
-                    name,
-                    description,
-                    imageUrl
-                );
+                console.log("updated party", uuid, name, description, imageUrl);
             });
 
             return res.json({
@@ -42,32 +36,36 @@ function createPartyMethods(app: any) {
 
     app.post("/gov/createParty", (req, res) => {
         try {
-          console.log("creating government ");
-    
-          const { uuid, name, description, imageUrl } = req.body;
-    
-          const sql = `INSERT INTO party (uuid, name, description, imageUrl) values (?, ?, ?, ?)`;
-    
-          db.run(sql, [uuid, name, description, imageUrl], (err) => {
-            if (err) {
-              return res.json({ status: 300, success: false, error: err });
-            }
-    
-            console.log("created party", uuid, name, description, imageUrl);
-          });
-    
-          return res.json({
-            status: 200,
-            success: true,
-          });
+            console.log("creating government ");
+
+            const { uuid, name, description, imageUrl } = req.body;
+
+            const sql = `INSERT INTO party (uuid, name, description, imageUrl) values (?, ?, ?, ?)`;
+
+            db.run(sql, [uuid, name, description, imageUrl], (err) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                console.log("created party", uuid, name, description, imageUrl);
+            });
+
+            return res.json({
+                status: 200,
+                success: true,
+            });
         } catch (err) {
-          console.log("failed to create party", err);
-    
-          return res.json({
-            status: 400,
-            success: false,
-            error: err,
-          });
+            console.log("failed to create party", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
         }
-      });
-  }
+    });
+};
