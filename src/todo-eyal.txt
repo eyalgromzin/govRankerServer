@@ -1,0 +1,30 @@
+datetime will be stored as '20050505' always as UTC + 0
+
+- create api methods: 
+        - create government
+        - add party to government
+        - add person to party
+        - add article to person
+        - add article to party
+        - add article to government
+        - get goverment articles - gets gov uuid, from to date 
+        - get party articles - gets gov uuid, from to date
+        - get person articles - gets gov uuid, from to date
+        - get person articles - gets gov uuid, from to date
+        - update person name 
+        - update person description 
+        - update person image url 
+        - update party name 
+        - update party description
+        - update party image url
+        - update government name 
+        - update government description
+        - update government image url
+
+
+- admin page - add a button to connect article to another entity. to enable 1 article to multiple entities. 
+                - like connect an article to multiple persons, multiple parties and governments
+
+- UI:   need to create a button near the article to connect multiple entities to an article. 
+        it will open a popup that will show all connected entities and a delete / add buttons 
+
