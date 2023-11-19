@@ -66,9 +66,7 @@ const db = new sqlite.Database('C:/my projects/govRanker/gove-ranker-server/src/
 //     uuid TEXT PRIMARY KEY CHECK (length(uuid) = 36),
 //     name TEXT CHECK (length(name) <= 50),
 //     description TEXT CHECK (length(description) <= 500),
-//     imageUrl TEXT CHECK (length(imageUrl) <= 250),
-//     governmentUUID TEXT CHECK (length(governmentUUID) = 36),
-//     FOREIGN KEY(governmentUUID) REFERENCES government(uuid)
+//     imageUrl TEXT CHECK (length(imageUrl) <= 250)
 //   ); `
 
 //   db.run(sql6)

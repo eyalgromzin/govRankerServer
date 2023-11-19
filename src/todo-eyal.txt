@@ -2,25 +2,15 @@ datetime will be stored as '20050505' always as UTC + 0
 
 - create api methods:  V created , VV created and tested 
         - create government - V
-        - create party 
-        - create party member 
-        - create article
-        - add article to party member 
-        - add article to party
-        - add article to government
-        - get goverment articles - gets gov uuid, from to date 
-        - get party articles - gets gov uuid, from to date
-        - get person articles - gets gov uuid, from to date
-        - get person articles - gets gov uuid, from to date
-        - update person name 
-        - update person description 
-        - update person image url 
-        - update party name 
-        - update party description
-        - update party image url
-        - update government name 
-        - update government description
-        - update government image url
+        - create party - V
+        - create party member - V
+        - create article - V
+        - get goverment articles - gets gov uuid, from to date - V
+        - get party articles - gets gov uuid, from to date - V
+        - get person articles - gets gov uuid, from to date - V
+        - update person name, description, image url - V
+        - update party name, description, image url - V
+        - update government name, description, image url - V
         
 - on app load - get all govs + parties + persons for later usage in autocomplete and selection 
 
