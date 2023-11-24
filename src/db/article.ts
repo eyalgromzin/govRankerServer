@@ -88,12 +88,13 @@ exports.createArticleMethods = (app, db) => {
         }
     });
 
-    app.get("/getEntityArticles", (req, res) => {
+    app.get("/article/getEntityArticles", (req, res) => {
         try {
             const { entityUUID, fromDate, toDate } = req.body;
-            const sql = `select * from articles where uuid in (select articleUUID from entityToArticle where entityUUID = ${entityUUID} ) and date > fromDate and date < toDate `;
+            const sql = `select * from articles where uuid in (select articleUUID from entityToArticle where entityUUID = "${entityUUID}" ) and date > "${fromDate}" and date < "${toDate}" `;
             db.all(sql, [], (err, rows) => {
                 if (err) {
+                    console.error(err)
                     return res.json({
                         status: 300,
                         success: false,
