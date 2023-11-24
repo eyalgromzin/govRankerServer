@@ -1,10 +1,6 @@
 datetime will be stored as '20050505' always as UTC + 0
 
-- create api methods:  V created , VV created and tested 
-        - create government - V
-        - create party - V
-        - create party member - V
-        - create article - V
+- create api methods:  V created , VV created and tested         
         - get goverment articles - gets gov uuid, from to date - V
         - get party articles - gets gov uuid, from to date - V
         - get person articles - gets gov uuid, from to date - V

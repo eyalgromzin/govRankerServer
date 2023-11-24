@@ -1,12 +1,16 @@
 exports.createArticleMethods = (app, db) => {
     // this is article for everyone
-    app.post("/addArticle", (req, res) => {
+    app.post("/article/addArticle", (req, res) => {
         try {
-            console.log("adding article ");
+            console.log("adding article");
 
-            const { uuid, url, date, description, imageUrl, rating } = req.body;
+            const { url, date, description, imageUrl, rating } = req.body;
+
+            const uuidV4 = require("uuidv4");
 
             const sql = `INSERT INTO articles (uuid, url, date, description, imageUrl, rating) values (?, ?, ?, ?, ?, ?)`;
+
+            const uuid = uuidV4.uuid();
 
             db.run(
                 sql,
@@ -35,6 +39,7 @@ exports.createArticleMethods = (app, db) => {
             return res.json({
                 status: 200,
                 success: true,
+                res: { uuid, url, date, description, imageUrl, rating },
             });
         } catch (err) {
             console.log("failed to add article", err);
@@ -47,10 +52,46 @@ exports.createArticleMethods = (app, db) => {
         }
     });
 
-    app.get("/getAllEntityArticles", (req, res) => {
+    app.post("/article/connectArticle", (req, res) => {
         try {
-            const { uuid } = req.body;
-            const sql = `select * from articles where uui in (select * from entityToArticle where entityUUID = ${uuid} ) `;
+            console.log("connecting article");
+
+            const { entityId, articleId, entityTypeId } = req.body;
+
+            const sql = `INSERT INTO entityToArticle (entityUUID, articleUUID, entityTypeId) values (?, ?, ?)`;
+
+            db.run(sql, [entityId, articleId, entityTypeId], (err) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                console.log("connected article", entityId, articleId);
+            });
+
+            return res.json({
+                status: 200,
+                success: true,
+                res: { entityId, articleId, entityTypeId },
+            });
+        } catch (err) {
+            console.log("failed to add article", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+    });
+
+    app.get("/getEntityArticles", (req, res) => {
+        try {
+            const { entityUUID, fromDate, toDate } = req.body;
+            const sql = `select * from articles where uuid in (select articleUUID from entityToArticle where entityUUID = ${entityUUID} ) and date > fromDate and date < toDate `;
             db.all(sql, [], (err, rows) => {
                 if (err) {
                     return res.json({
@@ -84,6 +125,8 @@ exports.createArticleMethods = (app, db) => {
             });
         }
     });
+
+
 
     app.get("/getAllArticles", (req, res) => {
         try {

@@ -1,3 +1,5 @@
+
+
 exports.createGovernmentMethods = (app, db) => {
     app.post("/gov/update", (req, res) => {
         try {
@@ -42,13 +44,19 @@ exports.createGovernmentMethods = (app, db) => {
 
     app.post("/gov/createGovernment", (req, res) => {
         try {
+            const uuidV4 = require('uuidv4');
+
             console.log("creating government ");
 
-            const { uuid, name, description, imageUrl } = req.body;
+            const { name, description, imageUrl } = req.body;
+            
+            console.log('uuid', uuidV4.uuid())
 
             const sql = `INSERT INTO government (uuid, name, description, imageUrl) values (?, ?, ?, ?)`;
 
-            db.run(sql, [uuid, name, description, imageUrl], (err) => {
+            const v4UUID = uuidV4.uuid()
+
+            db.run(sql, [v4UUID, name, description, imageUrl], (err) => {
                 if (err) {
                     return res.json({
                         status: 300,
@@ -59,7 +67,7 @@ exports.createGovernmentMethods = (app, db) => {
 
                 console.log(
                     "created government",
-                    uuid,
+                    v4UUID,
                     name,
                     description,
                     imageUrl
@@ -69,6 +77,7 @@ exports.createGovernmentMethods = (app, db) => {
             return res.json({
                 status: 200,
                 success: true,
+                res: { v4UUID, name, description, imageUrl }
             });
         } catch (err) {
             console.log("failed to create government", err);

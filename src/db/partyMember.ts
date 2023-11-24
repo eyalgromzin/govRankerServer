@@ -42,9 +42,13 @@ exports.createPartyMemberMethods = (app, db) => {
 
     app.post("/partyMember/createPartyMember", (req, res) => {
         try {
+            const uuidV4 = require('uuidv4');
+
             console.log("creating partyMember ");
 
-            const { uuid, name, description, imageUrl } = req.body;
+            const { name, description, imageUrl } = req.body;
+
+            const uuid = uuidV4.uuid()
 
             const sql = `INSERT INTO partyMember (uuid, name, description, imageUrl) values (?, ?, ?, ?)`;
 
@@ -69,6 +73,7 @@ exports.createPartyMemberMethods = (app, db) => {
             return res.json({
                 status: 200,
                 success: true,
+                res: { uuid, name, description, imageUrl }
             });
         } catch (err) {
             console.log("failed to create partyMember", err);

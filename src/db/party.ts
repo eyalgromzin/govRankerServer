@@ -34,11 +34,15 @@ exports.createPartyMethods = (app, db) => {
         }
     });
 
-    app.post("/gov/createParty", (req, res) => {
+    app.post("/party/createParty", (req, res) => {
         try {
-            console.log("creating government ");
+            const uuidV4 = require('uuidv4');
 
-            const { uuid, name, description, imageUrl } = req.body;
+            console.log("creating party ");
+
+            const { name, description, imageUrl } = req.body;
+
+            const uuid = uuidV4.uuid()
 
             const sql = `INSERT INTO party (uuid, name, description, imageUrl) values (?, ?, ?, ?)`;
 
@@ -57,6 +61,7 @@ exports.createPartyMethods = (app, db) => {
             return res.json({
                 status: 200,
                 success: true,
+                res: { uuid, name, description, imageUrl }
             });
         } catch (err) {
             console.log("failed to create party", err);
