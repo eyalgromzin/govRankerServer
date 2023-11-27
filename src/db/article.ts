@@ -1,8 +1,8 @@
 exports.createArticleMethods = (app, db) => {
     // this is article for everyone
-    app.post("/article/addArticle", (req, res) => {
+    app.post("/article/createArticle", (req, res) => {
         try {
-            console.log("adding article");
+            console.log("creating article");
 
             const { url, date, description, imageUrl, rating } = req.body;
 
@@ -126,8 +126,6 @@ exports.createArticleMethods = (app, db) => {
             });
         }
     });
-
-
 
     app.get("/getAllArticles", (req, res) => {
         try {
