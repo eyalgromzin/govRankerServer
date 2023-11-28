@@ -96,14 +96,14 @@ const db = new sqlite.Database(
 
 // db.run(sql7)
 
-// const sql8 = `CREATE TABLE memberToParty (
+// const sql8 = `CREATE TABLE partyMemberToParty (
 //     id INTEGER PRIMARY KEY,
-//     memberUUID TEXT CHECK (length(memberUUID) = 36),
+//     partyMemberUUID TEXT CHECK (length(partyMemberUUID) = 36),
 //     partyUUID TEXT CHECK (length(partyUUID) = 36),
-//     FOREIGN KEY(memberUUID) REFERENCES partyMember(uuid)
+//     FOREIGN KEY(partyMemberUUID) REFERENCES partyMember(uuid)
 //     FOREIGN KEY(partyUUID) REFERENCES party(uuid)
 //   ); `
 
-// need to create view of goverment to member , and member to government
+// // need to create view of goverment to member , and member to government
 
 // db.run(sql8)

@@ -1,7 +1,7 @@
 
 
 exports.createGovernmentMethods = (app, db) => {
-    app.post("/gov/update", (req, res) => {
+    app.post("/government/update", (req, res) => {
         try {
             const { uuid, name, description, imageUrl } = req.body;
 
@@ -42,7 +42,7 @@ exports.createGovernmentMethods = (app, db) => {
         }
     });
 
-    app.post("/gov/createGovernment", (req, res) => {
+    app.post("/government/createGovernment", (req, res) => {
         try {
             const uuidV4 = require('uuidv4');
 
@@ -90,7 +90,7 @@ exports.createGovernmentMethods = (app, db) => {
         }
     });
 
-    app.get("/gov/getAllGovernments", (req, res) => {
+    app.get("/government/getAllGovernments", (req, res) => {
         try {
             const sql = `select * from government`;
             db.all(sql, [], (err, rows) => {

@@ -88,10 +88,7 @@ exports.createPartyMemberMethods = (app, db) => {
 
     app.get("/partyMember/getAllPartyMembers", (req, res) => {
         try {
-            const { partyId } = req.body;
-
-            const sql = `select * from memberToParty where partyUUID = '${partyId}'`;
-
+            const sql = `select * from partyMember`;
             db.all(sql, [], (err, rows) => {
                 if (err) {
                     return res.json({
@@ -116,7 +113,7 @@ exports.createPartyMemberMethods = (app, db) => {
                 });
             });
         } catch (err) {
-            console.log("failed to get partyMember", err);
+            console.log("failed to get article", err);
 
             return res.json({
                 status: 400,
