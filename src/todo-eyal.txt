@@ -1,18 +1,5 @@
 datetime will be stored as '20050505' always as UTC + 0
 
-- create api methods:  V created , VV created and tested         
-        - get goverment articles - gets gov uuid, from to date - V
-        - get party articles - gets gov uuid, from to date - V
-        - get person articles - gets gov uuid, from to date - V
-        - update person name, description, image url - V
-        - update party name, description, image url - V
-        - update government name, description, image url - V
-        
-- on app load - get all govs + parties + persons for later usage in autocomplete and selection 
 
-- admin page - add a button to connect article to another entity. to enable 1 article to multiple entities. 
-                - like connect an article to multiple persons, multiple parties and governments
 
-- UI:   need to create a button near the article to connect multiple entities to an article. 
-        it will open a popup that will show all connected entities and a delete / add buttons 
 
