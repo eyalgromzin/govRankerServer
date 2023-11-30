@@ -2,6 +2,7 @@ const { createArticleMethods } = require('./db/article')
 const { createGovernmentMethods } = require('./db/government')
 const { createPartyMethods } = require('./db/party')
 const { createPartyMemberMethods } = require('./db/partyMember')
+const { createCommonMethods } = require('./db/common')
 
 
 const express = require('express');
@@ -31,9 +32,9 @@ createArticleMethods(app, db)
 createGovernmentMethods(app, db)
 createPartyMethods(app, db)
 createPartyMemberMethods(app, db)
+createCommonMethods(app, db)
 
 app.listen(port, () => {
   return console.log(`Express is 22 listening at http://localhost:${port}`);
 });
-
 

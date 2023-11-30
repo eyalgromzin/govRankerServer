@@ -90,6 +90,49 @@ exports.createGovernmentMethods = (app, db) => {
         }
     });
 
+    app.post("/government/deleteGovernment", (req, res) => {
+        try {
+            const uuidV4 = require('uuidv4');
+
+            console.log("creating government ");
+
+            const { governmentUUID } = req.body;
+            
+            console.log('uuid', uuidV4.uuid())
+
+            const sql = `DELETE FROM government WHERE uuid = ?`;
+
+            db.run(sql, [governmentUUID], (err) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                console.log(
+                    "deleted government",
+                    governmentUUID
+                );
+            });
+
+            return res.json({
+                status: 200,
+                success: true,
+                res: { governmentUUID }
+            });
+        } catch (err) {
+            console.log("failed to create government", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+    });
+
     app.get("/government/getAllGovernments", (req, res) => {
         try {
             const sql = `select * from government`;
