@@ -13,14 +13,6 @@ exports.createCommonMethods = (app, db) => {
                     });
                 }
 
-                if (rows < 1) {
-                    res.json({
-                        status: 300,
-                        success: false,
-                        error: "no rows matched",
-                    });
-                }
-
                 res.json({
                     status: 200,
                     success: true,
@@ -47,14 +39,6 @@ exports.createCommonMethods = (app, db) => {
                         status: 300,
                         success: false,
                         error: err,
-                    });
-                }
-
-                if (rows < 1) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: "no rows matched",
                     });
                 }
 

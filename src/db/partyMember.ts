@@ -144,4 +144,72 @@ exports.createPartyMemberMethods = (app, db) => {
             });
         }
     });
+
+    app.post("/government/deletePartyMember", (req, res) => {
+        try {
+            const uuidV4 = require('uuidv4');
+
+            console.log("deleting party");
+
+            const { partyMemberUUID } = req.body;
+            
+            console.log('uuid', uuidV4.uuid())
+
+            deletePartyMember(partyMemberUUID);
+
+            deletePartyMemberToParty(partyMemberUUID);
+
+            return res.json({
+                status: 200,
+                success: true,
+                res: { partyUUID: partyMemberUUID }
+            });
+        } catch (err) {
+            console.log("failed to create government", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+
+        function deletePartyMemberToParty(partyMemberUUID: any) {
+            const sql = `DELETE FROM partyMemberToParty WHERE partyMemberUUID = ?`;
+
+            db.run(sql, [partyMemberUUID], (err) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                console.log(
+                    `deleted partyMember to party with partyMemberUUID: ${partyMemberUUID}`,
+                    partyMemberUUID
+                );
+            });
+        }
+
+        function deletePartyMember(partyUUID: any) {
+            const sql = `DELETE FROM partyMember WHERE uuid = ?`;
+
+            db.run(sql, [partyUUID], (err) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                console.log(
+                    `deleted party member ${partyUUID}`,
+                    partyUUID
+                );
+            });
+        }
+    });
 };

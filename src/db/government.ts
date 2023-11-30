@@ -100,22 +100,9 @@ exports.createGovernmentMethods = (app, db) => {
             
             console.log('uuid', uuidV4.uuid())
 
-            const sql = `DELETE FROM government WHERE uuid = ?`;
+            deleteGovernment(governmentUUID);
 
-            db.run(sql, [governmentUUID], (err) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
-
-                console.log(
-                    "deleted government",
-                    governmentUUID
-                );
-            });
+            deletePartyToGovernment(governmentUUID);
 
             return res.json({
                 status: 200,
@@ -129,6 +116,44 @@ exports.createGovernmentMethods = (app, db) => {
                 status: 400,
                 success: false,
                 error: err,
+            });
+        }
+
+        function deletePartyToGovernment(governmentUUID: any) {
+            const sql = `DELETE FROM partyToGovernment WHERE governmentUUID = ?`;
+
+            db.run(sql, [governmentUUID], (err) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                console.log(
+                    `deleted party to government ${governmentUUID}`,
+                    governmentUUID
+                );
+            });
+        }
+
+        function deleteGovernment(governmentUUID: any) {
+            const sql = `DELETE FROM government WHERE uuid = ?`;
+
+            db.run(sql, [governmentUUID], (err) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                console.log(
+                    `deleted Government ${governmentUUID}`,
+                    governmentUUID
+                );
             });
         }
     });

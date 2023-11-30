@@ -141,16 +141,55 @@ exports.createPartyMethods = (app, db) => {
         }
     });
 
-    app.post("/party/deleteParty", (req, res) => {
+    app.post("/government/deleteParty", (req, res) => {
         try {
             const uuidV4 = require('uuidv4');
 
-            console.log("creating government ");
+            console.log("deleting party");
 
             const { partyUUID } = req.body;
             
             console.log('uuid', uuidV4.uuid())
 
+            deleteParty(partyUUID);
+
+            deletePartyToGovernment(partyUUID);
+
+            return res.json({
+                status: 200,
+                success: true,
+                res: { partyUUID }
+            });
+        } catch (err) {
+            console.log("failed to create government", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+
+        function deletePartyToGovernment(partyUUID: any) {
+            const sql = `DELETE FROM partyToGovernment WHERE partyUUID = ?`;
+
+            db.run(sql, [partyUUID], (err) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                console.log(
+                    `deleted party to government ${partyUUID}`,
+                    partyUUID
+                );
+            });
+        }
+
+        function deleteParty(partyUUID: any) {
             const sql = `DELETE FROM party WHERE uuid = ?`;
 
             db.run(sql, [partyUUID], (err) => {
@@ -163,23 +202,9 @@ exports.createPartyMethods = (app, db) => {
                 }
 
                 console.log(
-                    "deleted party",
+                    `deleted party ${partyUUID}`,
                     partyUUID
                 );
-            });
-
-            return res.json({
-                status: 200,
-                success: true,
-                res: { governmentUUID: partyUUID }
-            });
-        } catch (err) {
-            console.log("failed to create government", err);
-
-            return res.json({
-                status: 400,
-                success: false,
-                error: err,
             });
         }
     });
