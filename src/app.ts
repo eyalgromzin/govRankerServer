@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const path = require('path'); 
 
 const sqlite = require('sqlite3').verbose()
-const db = new sqlite.Database( 'C:/my projects/govRanker/gov-ranker-server/src/gov.db' , sqlite.OPEN_READWRITE, err => {
+const db = new sqlite.Database( './src/gov.db' , sqlite.OPEN_READWRITE, err => {
     if (err) console.error('SQLite connection error: ', err)
     else console.log('Connected to sqlite3');
 })
