@@ -6,15 +6,32 @@ exports.createArticleMethods = (app, db) => {
         try {
             console.log("creating article");
 
-            const { url, date, description, imageUrl, rating } = req.body;
+            const {
+                title,
+                url,
+                date,
+                description,
+                imageUrl,
+                rating,
+                creationDate,
+            } = req.body;
 
-            const sql = `INSERT INTO article (uuid, url, date, description, imageUrl, rating) values (?, ?, ?, ?, ?, ?)`;
+            const sql = `INSERT INTO article (uuid, url, date, description, imageUrl, rating, title, creationDate) values (?, ?, ?, ?, ?, ?, ?, ?)`;
 
             const uuid = uuidV4.uuid();
 
             db.run(
                 sql,
-                [uuid, url, date, description, imageUrl, rating],
+                [
+                    uuid,
+                    url,
+                    date,
+                    description,
+                    imageUrl,
+                    rating,
+                    title,
+                    creationDate,
+                ],
                 (err) => {
                     if (err) {
                         return res.json({
@@ -31,13 +48,24 @@ exports.createArticleMethods = (app, db) => {
                         date,
                         description,
                         imageUrl,
-                        rating
+                        rating,
+                        title,
+                        creationDate
                     );
 
                     return res.json({
                         status: 200,
                         success: true,
-                        res: { uuid, url, date, description, imageUrl, rating },
+                        res: {
+                            uuid,
+                            url,
+                            date,
+                            description,
+                            imageUrl,
+                            rating,
+                            title,
+                            creationDate,
+                        },
                     });
                 }
             );
@@ -54,15 +82,23 @@ exports.createArticleMethods = (app, db) => {
 
     app.post("/article/updateArticle", (req, res) => {
         try {
-            console.log("creating article");
+            console.log("updateing article");
 
-            const { uuid, title, url, date, description, imageUrl, rating, creationDate } = req.body.article;
+            const {
+                uuid,
+                title,
+                url,
+                date,
+                description,
+                imageUrl,
+                rating,
+            } = req.body;
 
-            const sql = `update article set url=?, date=?, description=?, imageUrl=?, rating=?, title=?, creationDate=?`;
+            const sql = `update article set url=?, date=?, description=?, imageUrl=?, rating=?, title=? where uuid=?`;
 
             db.run(
                 sql,
-                [url, date, description, imageUrl, rating, title, creationDate],
+                [url, date, description, imageUrl, rating, title, uuid],
                 (err) => {
                     if (err) {
                         return res.json({
@@ -81,13 +117,20 @@ exports.createArticleMethods = (app, db) => {
                         imageUrl,
                         rating,
                         title,
-                        creationDate
                     );
 
                     return res.json({
                         status: 200,
                         success: true,
-                        res: { uuid, title, url, date, description, imageUrl, rating, creationDate },
+                        res: {
+                            uuid,
+                            title,
+                            url,
+                            date,
+                            description,
+                            imageUrl,
+                            rating,
+                        },
                     });
                 }
             );
