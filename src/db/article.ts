@@ -52,6 +52,56 @@ exports.createArticleMethods = (app, db) => {
         }
     });
 
+    app.post("/article/updateArticle", (req, res) => {
+        try {
+            console.log("creating article");
+
+            const { uuid, title, url, date, description, imageUrl, rating, creationDate } = req.body.article;
+
+            const sql = `update article set url=?, date=?, description=?, imageUrl=?, rating=?, title=?, creationDate=?`;
+
+            db.run(
+                sql,
+                [url, date, description, imageUrl, rating, title, creationDate],
+                (err) => {
+                    if (err) {
+                        return res.json({
+                            status: 300,
+                            success: false,
+                            error: err,
+                        });
+                    }
+
+                    console.log(
+                        "updated article",
+                        uuid,
+                        url,
+                        date,
+                        description,
+                        imageUrl,
+                        rating,
+                        title,
+                        creationDate
+                    );
+
+                    return res.json({
+                        status: 200,
+                        success: true,
+                        res: { uuid, title, url, date, description, imageUrl, rating, creationDate },
+                    });
+                }
+            );
+        } catch (err) {
+            console.log("failed to add article", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+    });
+
     app.post("/article/createEntityArticle", (req, res) => {
         try {
             console.log("creating entity to article");
