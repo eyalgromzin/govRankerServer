@@ -25,12 +25,14 @@ exports.createGovernmentMethods = (app, db) => {
                     description,
                     imageUrl
                 );
+
+                return res.json({
+                    status: 200,
+                    success: true,
+                });
             });
 
-            return res.json({
-                status: 200,
-                success: true,
-            });
+           
         } catch (err) {
             console.log("failed to update government", err);
 
