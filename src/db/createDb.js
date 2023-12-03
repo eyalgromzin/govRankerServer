@@ -1,6 +1,6 @@
 const sqlite = require("sqlite3").verbose();
 const db = new sqlite.Database(
-    "C:/my projects/govRanker/gove-ranker-server/src/gov.db",
+    './src/gov.db',
     sqlite.OPEN_READWRITE,
     (err) => {
         if (err) return console.error(err);
