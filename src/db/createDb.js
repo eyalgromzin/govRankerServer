@@ -9,6 +9,8 @@ const db = new sqlite.Database(
     }
 );
 
+//comment
+
 // const sql01 = 'drop table ratingTypes'
 // const sql02 = 'drop table articles'
 // const sql03 = 'drop table party'
