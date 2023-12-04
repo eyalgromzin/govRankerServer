@@ -13,8 +13,10 @@ exports.createArticleMethods = (app, db) => {
                 description,
                 imageUrl,
                 rating,
-                creationDate,
             } = req.body;
+
+            const now = new Date()
+            const creationDate = `${now.getFullYear()}${now.getMonth()}${now.getDay()}`
 
             const sql = `INSERT INTO article (uuid, url, date, description, imageUrl, rating, title, creationDate) values (?, ?, ?, ?, ?, ?, ?, ?)`;
 
