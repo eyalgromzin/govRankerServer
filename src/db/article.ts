@@ -292,6 +292,37 @@ exports.createArticleMethods = (app, db) => {
         }
     });
 
+    app.get("/article/getRecentlyAdded", (req, res) => {
+        try {
+            const numOfArticles = req.query.numOfArticles
+            const sql = `select * from article order by creationDate limit ?`;
+            db.all(sql, [numOfArticles], (err, rows) => {
+                if (err) {
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                return res.json({
+                    status: 200,
+                    success: true,
+                    data: rows,
+                });
+            });
+        } catch (err) {
+            console.log("failed to get article", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+    });
+
+
     app.post("/article/deleteArticle", (req, res) => {
         try {
             const uuidV4 = require("uuidv4");
