@@ -1,3 +1,4 @@
 datetime will be stored as '20050505' always as UTC + 0
 
+- check the db actions to be like promise and not with callback
 
