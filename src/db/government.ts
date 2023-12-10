@@ -172,14 +172,6 @@ exports.createGovernmentMethods = (app, db) => {
                     });
                 }
 
-                if (rows < 1) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: "no rows matched",
-                    });
-                }
-
                 return res.json({
                     status: 200,
                     success: true,

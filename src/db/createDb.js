@@ -36,7 +36,7 @@ const db = new sqlite.Database(
 //     uuid TEXT PRIMARY KEY CHECK (length(uuid) = 36),
 //     url TEXT CHECK (length(url) <= 250),
 //     date TEXT CHECK (length(date) <= 10),
-//     description TEXT CHECK (length(description) <= 500),
+//     description TEXT CHECK (length(description) <= 5000),
 //     imageUrl TEXT CHECK (length(imageUrl) <= 250),
 //     rating INTEGER,
 //     FOREIGN KEY(rating) REFERENCES ratingTypes(id)
@@ -64,7 +64,7 @@ const db = new sqlite.Database(
 // const sql4 = `CREATE TABLE government (
 //     uuid TEXT PRIMARY KEY CHECK (length(uuid) = 36),
 //     name TEXT CHECK (length(name) <= 50),
-//     description TEXT CHECK (length(description) <= 500),
+//     description TEXT CHECK (length(description) <= 5000),
 //     imageUrl TEXT CHECK (length(imageUrl) <= 250)
 //   ); `
 
@@ -73,7 +73,7 @@ const db = new sqlite.Database(
 // const sql5 = `CREATE TABLE party (
 //     uuid TEXT PRIMARY KEY CHECK (length(uuid) = 36),
 //     name TEXT CHECK (length(name) <= 50),
-//     description TEXT CHECK (length(description) <= 500),
+//     description TEXT CHECK (length(description) <= 5000),
 //     imageUrl TEXT CHECK (length(imageUrl) <= 250)
 //   ); `
 
@@ -82,7 +82,7 @@ const db = new sqlite.Database(
 // const sql6 = `CREATE TABLE partyMember (
 //     uuid TEXT PRIMARY KEY CHECK (length(uuid) = 36),
 //     name TEXT CHECK (length(name) <= 50),
-//     description TEXT CHECK (length(description) <= 500),
+//     description TEXT CHECK (length(description) <= 5000),
 //     imageUrl TEXT CHECK (length(imageUrl) <= 250)
 //   ); `
 
