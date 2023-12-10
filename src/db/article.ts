@@ -6,17 +6,11 @@ exports.createArticleMethods = (app, db) => {
         try {
             console.log("creating article");
 
-            const {
-                title,
-                url,
-                date,
-                description,
-                imageUrl,
-                rating,
-            } = req.body;
+            const { title, url, date, description, imageUrl, rating } =
+                req.body;
 
-            const now = new Date()
-            const creationDate = `${now.getFullYear()}${now.getMonth()}${now.getDay()}`
+            const now = new Date();
+            const creationDate = `${now.getFullYear()}${now.getMonth()}${now.getDay()}`;
 
             const sql = `INSERT INTO article (uuid, url, date, description, imageUrl, rating, title, creationDate) values (?, ?, ?, ?, ?, ?, ?, ?)`;
 
@@ -86,15 +80,8 @@ exports.createArticleMethods = (app, db) => {
         try {
             console.log("updateing article");
 
-            const {
-                uuid,
-                title,
-                url,
-                date,
-                description,
-                imageUrl,
-                rating,
-            } = req.body;
+            const { uuid, title, url, date, description, imageUrl, rating } =
+                req.body;
 
             const sql = `update article set url=?, date=?, description=?, imageUrl=?, rating=?, title=? where uuid=?`;
 
@@ -118,7 +105,7 @@ exports.createArticleMethods = (app, db) => {
                         description,
                         imageUrl,
                         rating,
-                        title,
+                        title
                     );
 
                     return res.json({
@@ -265,6 +252,108 @@ exports.createArticleMethods = (app, db) => {
         }
     });
 
+    app.get("/article/getGovernmentArticles", (req, res) => {
+        try {
+            const governmentUUID = req.query.governmentUUID;
+
+            const sql = `select * from article where uuid in (
+                select articleUUID from entityToArticle where entityUUID in 
+                (select pmUUID from governmentToPartyMember where govUUID=?)
+                )`;
+            db.all(sql, [governmentUUID], (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                return res.json({
+                    status: 200,
+                    success: true,
+                    data: rows,
+                });
+            });
+        } catch (err) {
+            console.log("failed to get government article", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+    });
+
+    app.get("/article/getPartyArticles", (req, res) => {
+        try {
+            const partyUUID = req.query.partyUUID;
+
+            const sql = `select * from article where uuid in (
+                select articleUUID from entityToArticle where entityUUID in 
+                (select partyMemberUUID from partyMemberToParty where partyUUID=?))`;
+            db.all(sql, [partyUUID], (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                return res.json({
+                    status: 200,
+                    success: true,
+                    data: rows,
+                });
+            });
+        } catch (err) {
+            console.log("failed to get government article", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+    });
+
+    app.get("/article/getPartyMemberArticles", (req, res) => {
+        try {
+            const partyMemberUUID = req.query.partyMemberUUID;
+
+            const sql = `select * from article where uuid in (
+                select articleUUID from entityToArticle where entityUUID = ?`;
+            db.all(sql, [partyMemberUUID], (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    return res.json({
+                        status: 300,
+                        success: false,
+                        error: err,
+                    });
+                }
+
+                return res.json({
+                    status: 200,
+                    success: true,
+                    data: rows,
+                });
+            });
+        } catch (err) {
+            console.log("failed to get government article", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+    });
+
     app.get("/article/getAllArticles", (req, res) => {
         try {
             const sql = `select * from article`;
@@ -296,7 +385,7 @@ exports.createArticleMethods = (app, db) => {
 
     app.get("/article/getRecentlyAdded", (req, res) => {
         try {
-            const numOfArticles = req.query.numOfArticles
+            const numOfArticles = req.query.numOfArticles;
             const sql = `select * from article order by creationDate limit ?`;
             db.all(sql, [numOfArticles], (err, rows) => {
                 if (err) {
@@ -323,7 +412,6 @@ exports.createArticleMethods = (app, db) => {
             });
         }
     });
-
 
     app.post("/article/deleteArticle", (req, res) => {
         try {
