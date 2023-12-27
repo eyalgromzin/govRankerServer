@@ -34,13 +34,38 @@ const bodyParser = require('body-parser');
 const path = require('path'); 
 const cookieParser = require('cookie-parser');
 
-
 require('dotenv').config();
 
-const sqlite = require('sqlite3').verbose()
-const db = new sqlite.Database( './src/gov.db' , sqlite.OPEN_READWRITE, err => {
-    if (err) console.error('SQLite connection error: ', err)
-    else console.log('Connected to sqlite3');
+// const sqlite = require('sqlite3').verbose()
+// const db = new sqlite.Database( './src/gov.db' , sqlite.OPEN_READWRITE, err => {
+//     if (err) console.error('SQLite connection error: ', err)
+//     else console.log('Connected to sqlite3');
+// })
+
+const fs = require('fs');
+
+const {Client} = require('pg')
+const client = new Client({
+  host: 'memshala.c92cmm8w8zbh.us-east-1.rds.amazonaws.com',
+  user: 'eyalgromzin',
+  password: 'dbPassword1!',
+  port: 5432,
+  database: 'postgres',
+  ssl: {
+    rejectUnauthorized: false,
+  },
+})
+
+client.connect()
+
+client.query('select * from party', (err, res) => {
+  if(!err){
+    console.log(res.rows)
+  }else{
+    console.log(err.message)
+  }
+
+  client.end()
 })
 
 const app = express();
@@ -69,15 +94,15 @@ app.post('/tokenTest', validateCookie, (req, res) => {
   console.log('testing cookie, look at the log')
 })
 
-createArticleMethods(app, db)
-createGovernmentMethods(app, db)
-createPartyMethods(app, db)
-createPartyMemberMethods(app, db)
-createCommonMethods(app, db)
-createLoginMethods(app, db)
+createArticleMethods(app, client)
+// createGovernmentMethods(app, client)
+// createPartyMethods(app, client)
+// createPartyMemberMethods(app, client)
+// createCommonMethods(app, client)
+// createLoginMethods(app, client)
 
 
 app.listen(port, () => {
-  return console.log(`Express is 22 listening at http://localhost:${port}`);
+  return console.log(`Express is listening at http://localhost:${port}`);
 });
 
