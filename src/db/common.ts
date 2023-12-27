@@ -1,23 +1,13 @@
-
-
 exports.createCommonMethods = (app, db) => {
-    app.get("/common/getAllPartyToGovernment", (req, res) => {
+    app.get("/common/getAllPartyToGovernment", async (req, res) => {
         try {
             const sql = `select * from partyToGovernment`;
-            db.all(sql, [], (err, rows) => {
-                if (err) {
-                    res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            const result = await db.query(sql);
 
-                res.json({
-                    status: 200,
-                    success: true,
-                    data: rows,
-                });
+            res.json({
+                status: 200,
+                success: true,
+                data: result.rows,
             });
         } catch (err) {
             console.log("failed to get article", err);
@@ -30,23 +20,15 @@ exports.createCommonMethods = (app, db) => {
         }
     });
 
-    app.get("/common/getAllPartyMemberToParty", (req, res) => {
+    app.get("/common/getAllPartyMemberToParty", async (req, res) => {
         try {
             const sql = `select * from partyMemberToParty`;
-            db.all(sql, [], (err, rows) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            const result = await db.query(sql);
 
-                return res.json({
-                    status: 200,
-                    success: true,
-                    data: rows,
-                });
+            return res.json({
+                status: 200,
+                success: true,
+                data: result.rows,
             });
         } catch (err) {
             console.log("failed to get article", err);
@@ -59,23 +41,15 @@ exports.createCommonMethods = (app, db) => {
         }
     });
 
-    app.get("/common/getAllPartyMemberToGovernment", (req, res) => {
+    app.get("/common/getAllPartyMemberToGovernment", async (req, res) => {
         try {
             const sql = `select * from partyMemberToGovernment`;
-            db.all(sql, [], (err, rows) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            const result = db.all(sql);
 
-                return res.json({
-                    status: 200,
-                    success: true,
-                    data: rows,
-                });
+            return res.json({
+                status: 200,
+                success: true,
+                data: result.rows,
             });
         } catch (err) {
             console.log("failed to get gov party members", err);

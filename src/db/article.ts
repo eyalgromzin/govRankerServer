@@ -239,27 +239,18 @@ exports.createArticleMethods = (app, db) => {
         }
     });
 
-    app.get("/article/getPartyMemberArticles", (req, res) => {
+    app.get("/article/getPartyMemberArticles", async (req, res) => {
         try {
             const partyMemberUUID = req.query.partyMemberUUID;
 
             const sql = `select * from article where uuid in (
-                select articleUUID from entityToArticle where entityUUID = ?`;
-            db.all(sql, [partyMemberUUID], (err, rows) => {
-                if (err) {
-                    console.error(err);
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+                select articleUUID from entityToArticle where entityUUID = '${partyMemberUUID}'`;
+            const result = await db.query(sql);
 
-                return res.json({
-                    status: 200,
-                    success: true,
-                    data: rows,
-                });
+            return res.json({
+                status: 200,
+                success: true,
+                data: result.rows,
             });
         } catch (err) {
             console.log("failed to get government article", err);
@@ -292,26 +283,19 @@ exports.createArticleMethods = (app, db) => {
         }
     });
 
-    app.get("/article/getRecentlyAdded", (req, res) => {
+    app.get("/article/getRecentlyAdded", async (req, res) => {
         try {
             const numOfArticles = req.query.numOfArticles;
             const sql = `select * from article order by creationDate limit ${
                 numOfArticles + ""
             }`;
-            db.all(sql, [numOfArticles], (err, rows) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
 
-                return res.json({
-                    status: 200,
-                    success: true,
-                    data: rows,
-                });
+            const result = await db.all(sql);
+
+            return res.json({
+                status: 200,
+                success: true,
+                data: result.rows,
             });
         } catch (err) {
             console.log("failed to get article", err);
@@ -353,39 +337,20 @@ exports.createArticleMethods = (app, db) => {
             });
         }
 
-        function deleteEntityToArticle(articleUUID: any) {
-            const sql = `DELETE FROM entityToArticle WHERE articleUUID = ?`;
+        async function deleteEntityToArticle(articleUUID: any) {
+            const sql = `DELETE FROM entityToArticle WHERE articleUUID = '${articleUUID}'`;
 
-            db.run(sql, [articleUUID], (err) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            db.query(sql);
 
-                console.log(
-                    `deleted entity to article ${articleUUID}`,
-                    articleUUID
-                );
-            });
+            console.log(`deleted entity to article ${articleUUID}`)
         }
 
-        function deleteArticle(articleUUID: string) {
+        async function deleteArticle(articleUUID: string) {
             const sql = `DELETE FROM article WHERE uuid = ?`;
 
-            db.run(sql, [articleUUID], (err) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            await db.query(sql);
 
-                console.log(`deleted article ${articleUUID}`);
-            });
+            console.log(`deleted article ${articleUUID}`);
         }
     });
 };

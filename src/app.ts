@@ -95,11 +95,11 @@ app.post('/tokenTest', validateCookie, (req, res) => {
 })
 
 createArticleMethods(app, client)
-// createGovernmentMethods(app, client)
-// createPartyMethods(app, client)
-// createPartyMemberMethods(app, client)
-// createCommonMethods(app, client)
-// createLoginMethods(app, client)
+createGovernmentMethods(app, client)
+createPartyMethods(app, client)
+createPartyMemberMethods(app, client)
+createCommonMethods(app, client)
+createLoginMethods(app, client)
 
 
 app.listen(port, () => {
