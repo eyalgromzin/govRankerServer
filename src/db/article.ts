@@ -2,7 +2,7 @@ exports.createArticleMethods = (app, db) => {
     const uuidV4 = require("uuidv4");
 
     // this is article for everyone
-    app.post("/article/createArticle", (req, res) => {
+    app.post("/article/createArticle", async (req, res) => {
         try {
             console.log("creating article");
 
@@ -13,9 +13,10 @@ exports.createArticleMethods = (app, db) => {
             const creationDate = `${now.getFullYear()}${now.getMonth()}${now.getDay()}`;
 
             const uuid = uuidV4.uuid();
-            const sql = `INSERT INTO article (entity_uuid, url, date, description, imageUrl, rating, title, creationDate) values ('${uuid}', '${url}', '${date}', '${description}', '${imageUrl}', ${rating}, '${title}', '${creationDate}')`;
 
-            const result = db.query(sql);
+            const sql = `INSERT INTO article (entity_uuid, url, date, description, imageUrl, rating, title, creationDate) values ($1, '${url}', '${date}', '${description}', '${imageUrl}', ${rating}, '${title}', '${creationDate}')`;
+
+            const result = await db.query(sql, [uuid]);
             console.log(
                 "added article",
                 uuid,
@@ -94,13 +95,18 @@ exports.createArticleMethods = (app, db) => {
 
             const { entityUUID, articleUUID, entityTypeId } = req.body;
 
-            const sql = `INSERT INTO entity_to_article (entity_uuid, article_uuid, entity_type_id) values (${entityUUID}, ${articleUUID}, ${entityTypeId})`;
-
             const uuid = uuidV4.uuid();
 
-            const result = await db.query(sql);
+            const sql = `INSERT INTO entity_to_article (entity_uuid, article_uuid, entity_type_id) values ($1, ${articleUUID}, ${entityTypeId})`;
 
-            console.log("added article", entityUUID, articleUUID, entityTypeId);
+            const result = await db.query(sql, [uuid]);
+
+            console.log(
+                "added article",
+                entityUUID,
+                articleUUID,
+                entityTypeId
+            );
 
             return res.json({
                 status: 200,
@@ -122,11 +128,11 @@ exports.createArticleMethods = (app, db) => {
         try {
             console.log("connecting article");
 
-            const { entityId, articleId, entityTypeId } = req.body;
+            const { entityUUID, articleUUID, entityTypeId } = req.body;
 
-            const sql = `INSERT INTO entity_to_article (entity_uuid, article_uuid, entity_type_id) values ('${entityId}', '${articleId}', ${entityTypeId})`;
+            const sql = `INSERT INTO entity_to_article (entity_uuid, article_uuid, entity_type_id) values ($1, $2, ${entityTypeId})`;
 
-            const result = await db.query(sql);
+            const result = await db.query(sql, [entityUUID, articleUUID]);
 
             return res.json({
                 status: 200,

@@ -4,9 +4,9 @@ exports.createPartyMemberMethods = (app, db) => {
         partyMemberUUID: string,
         partyUUID: string
     ) => {
-        const sql = `INSERT INTO party_member_to_party (party_member_uuid, party_uuid) values ('${partyMemberUUID}', '${partyUUID}')`;
+        const sql = `INSERT INTO party_member_to_party (party_member_uuid, party_uuid) values ($1, $2)`;
 
-        const result = await db.query(sql);
+        const result = await db.query(sql, [partyMemberUUID, partyUUID]);
 
         console.log(
             "created party member to party",
@@ -60,9 +60,9 @@ exports.createPartyMemberMethods = (app, db) => {
 
         const uuid = uuidV4.uuid();
 
-        const sql = `INSERT INTO party_member (entity_uuid, name, description, imageUrl) values ('${uuid}', '${name}', '${description}', '${imageUrl}')`;
+        const sql = `INSERT INTO party_member (entity_uuid, name, description, imageUrl) values ($1, '${name}', '${description}', '${imageUrl}')`;
 
-        const result = await db.query(sql);
+        const result = await db.query(sql, [uuid]);
 
         console.log("created party member", uuid, name, description, imageUrl);
         return uuid;

@@ -58,7 +58,7 @@ const client = new Client({
 
 client.connect()
 
-client.query('select * from partyMember', (err, res) => {
+client.query('select * from party_member', (err, res) => {
   if(!err){
     console.log(res.rows)
   }else{

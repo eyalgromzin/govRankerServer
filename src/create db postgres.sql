@@ -149,3 +149,16 @@ CREATE VIEW IF NOT EXISTS government_to_party_member AS
      WHERE party_member.entity_uuid = party_member_to_party.party_member_uuid AND 
            government.entity_uuid = party_to_government.government_uuid AND 
            party.entity_uuid = party_to_government.party_uuid;
+
+DROP VIEW IF EXISTS party_member_to_government;
+CREATE VIEW IF NOT EXISTS party_member_to_government AS
+    SELECT party_member.entity_uuid AS pm_uuid,
+           government.entity_uuid AS gov_uuid
+      FROM party_member,
+           government,
+           party_to_government,
+           party_member_to_party,
+           party
+     WHERE party_member.entity_uuid = party_member_to_party.party_member_uuid AND 
+           government.entity_uuid = party_to_government.government_uuid AND 
+           party.entity_uuid = party_to_government.party_uuid;
