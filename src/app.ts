@@ -65,7 +65,7 @@ client.query('select * from party', (err, res) => {
     console.log(err.message)
   }
 
-  client.end()
+  // client.end()
 })
 
 const app = express();

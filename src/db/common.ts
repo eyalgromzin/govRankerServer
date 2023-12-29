@@ -44,7 +44,7 @@ exports.createCommonMethods = (app, db) => {
     app.get("/common/getAllPartyMemberToGovernment", async (req, res) => {
         try {
             const sql = `select * from partyMemberToGovernment`;
-            const result = db.all(sql);
+            const result = db.query(sql);
 
             return res.json({
                 status: 200,

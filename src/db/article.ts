@@ -290,7 +290,7 @@ exports.createArticleMethods = (app, db) => {
                 numOfArticles + ""
             }`;
 
-            const result = await db.all(sql);
+            const result = await db.query(sql);
 
             return res.json({
                 status: 200,
