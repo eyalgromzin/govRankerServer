@@ -1,23 +1,23 @@
 exports.createPartyMemberMethods = (app, db) => {
-    const createPartyMemberAndPartyConnectionInDB = async (res, partyMemberUUID: string, partyUUID: string) => {
-        const sql = `INSERT INTO partyMemberToParty (partyMemberUUID, partyUUID) values (?, ?)`;
-    
-        const result = await db.run(sql, [partyMemberUUID, partyUUID], (err) => {
-            if (err) {
-                return res.json({
-                    status: 300,
-                    success: false,
-                    error: err,
-                });
-            }
-    
-            console.log("created party member to party", partyMemberUUID, partyUUID);
-        });
-    
-        return result;
-    }
+    const createPartyMemberAndPartyConnectionInDB = async (
+        res,
+        partyMemberUUID: string,
+        partyUUID: string
+    ) => {
+        const sql = `INSERT INTO partyMemberToParty (partyMemberUUID, partyUUID) values (${partyMemberUUID}, ${partyUUID})`;
 
-    app.post("/partyMember/updatePartyMember", (req, res) => {
+        const result = await db.query(sql);
+
+        console.log(
+            "created party member to party",
+            partyMemberUUID,
+            partyUUID
+        );
+
+        return result;
+    };
+
+    app.post("/partyMember/updatePartyMember", async (req, res) => {
         try {
             const { uuid, name, description, imageUrl } = req.body;
 
@@ -25,23 +25,15 @@ exports.createPartyMemberMethods = (app, db) => {
 
             const sql = `update partyMember set name=${name}, name=${description}, name=${imageUrl} where uuid=${uuid}`;
 
-            db.run(sql, (err) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            const result = await db.query(sql);
 
-                console.log(
-                    "updated partyMember",
-                    uuid,
-                    name,
-                    description,
-                    imageUrl
-                );
-            });
+            console.log(
+                "updated partyMember",
+                uuid,
+                name,
+                description,
+                imageUrl
+            );
 
             return res.json({
                 status: 200,
@@ -58,42 +50,53 @@ exports.createPartyMemberMethods = (app, db) => {
         }
     });
 
-    const createPartyMemberInDB = (res, name: any, description: any, imageUrl: any) => {
-        const uuidV4 = require('uuidv4');
+    const createPartyMemberInDB = async (
+        res,
+        name: any,
+        description: any,
+        imageUrl: any
+    ) => {
+        const uuidV4 = require("uuidv4");
 
         const uuid = uuidV4.uuid();
-    
-        const sql = `INSERT INTO partyMember (uuid, name, description, imageUrl) values (?, ?, ?, ?)`;
-    
-        db.run(sql, [uuid, name, description, imageUrl], (err) => {
-            if (err) {
-                return res.json({
-                    status: 300,
-                    success: false,
-                    error: err,
-                });
-            }
-    
-            console.log("created party member", uuid, name, description, imageUrl);
-        });
+
+        const sql = `INSERT INTO partyMember (uuid, name, description, imageUrl) values (${uuid}, ${name}, ${description}, ${imageUrl})`;
+
+        const result = await db.query(sql);
+
+        console.log("created party member", uuid, name, description, imageUrl);
         return uuid;
-    }
+    };
 
-    app.post("/partyMember/createPartyMember", (req, res) => {
+    app.post("/partyMember/createPartyMember", async (req, res) => {
         try {
-
             console.log("creating party ");
 
             const { name, description, imageUrl, partyUUID } = req.body;
 
-            const newPartyMemberUUID = createPartyMemberInDB(res, name, description, imageUrl);
+            const newPartyMemberUUID = await createPartyMemberInDB(
+                res,
+                name,
+                description,
+                imageUrl
+            );
 
-            createPartyMemberAndPartyConnectionInDB(res, newPartyMemberUUID, partyUUID) 
+            await createPartyMemberAndPartyConnectionInDB(
+                res,
+                newPartyMemberUUID,
+                partyUUID
+            );
 
             return res.json({
                 status: 200,
                 success: true,
-                res: { name, description, imageUrl, partyUUID, newPartyMemberUUID }
+                res: {
+                    name,
+                    description,
+                    imageUrl,
+                    partyUUID,
+                    newPartyMemberUUID,
+                },
             });
         } catch (err) {
             console.log("failed to create party member", err);
@@ -104,35 +107,17 @@ exports.createPartyMemberMethods = (app, db) => {
                 error: err,
             });
         }
-
-        
     });
 
-    app.get("/partyMember/getAllPartyMembers", (req, res) => {
+    app.get("/partyMember/getAllPartyMembers", async (req, res) => {
         try {
             const sql = `select * from partyMember`;
-            db.all(sql, [], (err, rows) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            const result = await db.query(sql);
 
-                if (rows < 1) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: "no rows matched",
-                    });
-                }
-
-                return res.json({
-                    status: 200,
-                    success: true,
-                    data: rows,
-                });
+            return res.json({
+                status: 200,
+                success: true,
+                data: result.rows,
             });
         } catch (err) {
             console.log("failed to get article", err);
@@ -145,24 +130,24 @@ exports.createPartyMemberMethods = (app, db) => {
         }
     });
 
-    app.post("/government/deletePartyMember", (req, res) => {
+    app.post("/government/deletePartyMember", async (req, res) => {
         try {
-            const uuidV4 = require('uuidv4');
+            const uuidV4 = require("uuidv4");
 
             console.log("deleting party");
 
             const { partyMemberUUID } = req.body;
-            
-            console.log('uuid', uuidV4.uuid())
 
-            deletePartyMember(partyMemberUUID);
+            console.log("uuid", uuidV4.uuid());
 
-            deletePartyMemberToParty(partyMemberUUID);
+            await deletePartyMember(partyMemberUUID);
+
+            await deletePartyMemberToParty(partyMemberUUID);
 
             return res.json({
                 status: 200,
                 success: true,
-                res: { partyUUID: partyMemberUUID }
+                res: { partyUUID: partyMemberUUID },
             });
         } catch (err) {
             console.log("failed to create government", err);
@@ -205,10 +190,7 @@ exports.createPartyMemberMethods = (app, db) => {
                     });
                 }
 
-                console.log(
-                    `deleted party member ${partyUUID}`,
-                    partyUUID
-                );
+                console.log(`deleted party member ${partyUUID}`, partyUUID);
             });
         }
     });
