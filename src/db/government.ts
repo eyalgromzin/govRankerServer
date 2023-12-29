@@ -5,7 +5,7 @@ exports.createGovernmentMethods = (app, db) => {
 
             console.log("updating government");
 
-            const sql = `update government set name=${name}, name=${description}, name=${imageUrl} where uuid=${uuid}`;
+            const sql = `update government set name=${name}, description=${description}, image_url=${imageUrl} where entity_uuid=${uuid}`;
 
             await db.query(sql);
 
@@ -42,7 +42,7 @@ exports.createGovernmentMethods = (app, db) => {
 
             console.log("uuid", uuidV4.uuid());
 
-            const sql = `INSERT INTO government (uuid, name, description, imageUrl) values ('${uuidV4}', '${name}', '${description}', '${imageUrl})'`;
+            const sql = `INSERT INTO government (entity_uuid, name, description, image_url) values ('${uuidV4}', '${name}', '${description}', '${imageUrl})'`;
 
             const v4UUID = uuidV4.uuid();
 
@@ -102,7 +102,7 @@ exports.createGovernmentMethods = (app, db) => {
         }
 
         async function deletePartyToGovernment(governmentUUID: any) {
-            const sql = `DELETE FROM partyToGovernment WHERE governmentUUID = ?`;
+            const sql = `DELETE FROM party_to_government WHERE government_uuid = ?`;
 
             await db.run(sql);
 
@@ -112,10 +112,10 @@ exports.createGovernmentMethods = (app, db) => {
             );
         }
 
-        function deleteGovernment(governmentUUID: any) {
-            const sql = `DELETE FROM government WHERE uuid = ?`;
+        async function deleteGovernment(governmentUUID: any) {
+            const sql = `DELETE FROM government WHERE entity_uuid = ?`;
 
-            db.run(sql);
+            await db.run(sql);
 
             console.log(`deleted Government ${governmentUUID}`, governmentUUID);
         }

@@ -4,7 +4,7 @@ exports.createPartyMemberMethods = (app, db) => {
         partyMemberUUID: string,
         partyUUID: string
     ) => {
-        const sql = `INSERT INTO partyMemberToParty (partyMemberUUID, partyUUID) values (${partyMemberUUID}, ${partyUUID})`;
+        const sql = `INSERT INTO party_member_to_party (party_member_uuid, party_uuid) values ('${partyMemberUUID}', '${partyUUID}')`;
 
         const result = await db.query(sql);
 
@@ -23,7 +23,7 @@ exports.createPartyMemberMethods = (app, db) => {
 
             console.log("updating partyMember ");
 
-            const sql = `update partyMember set name=${name}, name=${description}, name=${imageUrl} where uuid=${uuid}`;
+            const sql = `update party_member set name='${name}', description='${description}', imageUrl='${imageUrl}' where entity_uuid=${uuid}`;
 
             const result = await db.query(sql);
 
@@ -60,7 +60,7 @@ exports.createPartyMemberMethods = (app, db) => {
 
         const uuid = uuidV4.uuid();
 
-        const sql = `INSERT INTO partyMember (uuid, name, description, imageUrl) values (${uuid}, ${name}, ${description}, ${imageUrl})`;
+        const sql = `INSERT INTO party_member (entity_uuid, name, description, imageUrl) values ('${uuid}', '${name}', '${description}', '${imageUrl}')`;
 
         const result = await db.query(sql);
 
@@ -111,7 +111,7 @@ exports.createPartyMemberMethods = (app, db) => {
 
     app.get("/partyMember/getAllPartyMembers", async (req, res) => {
         try {
-            const sql = `select * from partyMember`;
+            const sql = `select * from party_member`;
             const result = await db.query(sql);
 
             return res.json({
@@ -120,7 +120,7 @@ exports.createPartyMemberMethods = (app, db) => {
                 data: result.rows,
             });
         } catch (err) {
-            console.log("failed to get article", err);
+            console.log("failed to get party member ", err);
 
             return res.json({
                 status: 400,
@@ -159,39 +159,23 @@ exports.createPartyMemberMethods = (app, db) => {
             });
         }
 
-        function deletePartyMemberToParty(partyMemberUUID: any) {
-            const sql = `DELETE FROM partyMemberToParty WHERE partyMemberUUID = ?`;
+        async function deletePartyMemberToParty(partyMemberUUID: any) {
+            const sql = `DELETE FROM party_member_to_party WHERE party_member_uuid = ${partyMemberUUID}`;
 
-            db.run(sql, [partyMemberUUID], (err) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            const result = await db.query(sql);
 
-                console.log(
-                    `deleted partyMember to party with partyMemberUUID: ${partyMemberUUID}`,
-                    partyMemberUUID
-                );
-            });
+            console.log(
+                `deleted partyMember to party with partyMemberUUID: ${partyMemberUUID}`,
+                partyMemberUUID
+            );
         }
 
-        function deletePartyMember(partyUUID: any) {
-            const sql = `DELETE FROM partyMember WHERE uuid = ?`;
+        async function deletePartyMember(partyUUID: any) {
+            const sql = `DELETE FROM party_member WHERE entity_uuid = ${partyUUID}`;
 
-            db.run(sql, [partyUUID], (err) => {
-                if (err) {
-                    return res.json({
-                        status: 300,
-                        success: false,
-                        error: err,
-                    });
-                }
+            const result = await db.query(sql)
 
-                console.log(`deleted party member ${partyUUID}`, partyUUID);
-            });
+            console.log(`deleted party member ${partyUUID}`, partyUUID);
         }
     });
 };
