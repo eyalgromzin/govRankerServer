@@ -6,7 +6,7 @@ exports.createPartyMethods = (app, db) => {
         partyUUID: string,
         governmentUUID: string
     ) => {
-        const sql = `INSERT INTO partyToGovernment (party_uuid, government_uuid) values ($1, $2)`;
+        const sql = `INSERT INTO party_to_government ("party_uuid", "government_uuid") values ($1, $2)`;
 
         const result = await db.query(sql, [partyUUID, governmentUUID]);
 
@@ -23,7 +23,10 @@ exports.createPartyMethods = (app, db) => {
     ) => {
         const uuid = uuidV4.uuid();
 
-        const sql = `INSERT INTO party (entity_uuid, name, description, imageUrl) values ($1, ${name}, ${description}, ${imageUrl})`;
+        const name2 = name.replace('\'', '\'\'')
+        const description2 = description.replace('\'', '\'\'')
+
+        const sql = `INSERT INTO party ("entity_uuid", "name", "description", "image_url") values ($1, '${name2}', '${description2}', '${imageUrl}')`;
 
         const result = await db.query(sql, [uuid]);
 
@@ -111,7 +114,7 @@ exports.createPartyMethods = (app, db) => {
         }
     });
 
-    app.post("/government/deleteParty", (req, res) => {
+    app.post("/party/deleteParty", async (req, res) => {
         try {
             const uuidV4 = require("uuidv4");
 
@@ -121,9 +124,9 @@ exports.createPartyMethods = (app, db) => {
 
             console.log("uuid", uuidV4.uuid());
 
-            deleteParty(partyUUID);
+            await deletePartyToGovernment(partyUUID);
 
-            deletePartyToGovernment(partyUUID);
+            await deleteParty(partyUUID);
 
             return res.json({
                 status: 200,
@@ -141,9 +144,9 @@ exports.createPartyMethods = (app, db) => {
         }
 
         async function deletePartyToGovernment(partyUUID: any) {
-            const sql = `DELETE FROM party_to_government WHERE party_uuid = ?`;
+            const sql = `DELETE FROM party_to_government WHERE party_uuid = $1`;
 
-            const result = await db.query(sql)
+            const result = await db.query(sql, [partyUUID])
 
             console.log(
                 `deleted party to government ${partyUUID}`,
@@ -152,9 +155,9 @@ exports.createPartyMethods = (app, db) => {
         }
 
         async function deleteParty(partyUUID: any) {
-            const sql = `DELETE FROM party WHERE entity_uuid = ?`;
+            const sql = `DELETE FROM party WHERE entity_uuid = $1`;
 
-            const result = await db.query(sql)
+            const result = await db.query(sql, [partyUUID])
 
             console.log(`deleted party ${partyUUID}`, partyUUID);
         }

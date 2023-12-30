@@ -42,7 +42,10 @@ exports.createGovernmentMethods = (app, db) => {
 
             console.log("uuid", uuidV4);
 
-            const sql = `INSERT INTO government (entity_uuid, name, description, image_url) values ($1, '${name}', '${description}', '${imageUrl}')`;
+            const name2 = name.replace(/['"]/g, '');
+            const description2 = description.replace(/['"]/g, '');
+
+            const sql = `INSERT INTO government ("entity_uuid", "name", "description", "image_url") values ($1, '${name2}', '${description2}', '${imageUrl}')`;
 
             await db.query(sql, [uuidV4]);
 

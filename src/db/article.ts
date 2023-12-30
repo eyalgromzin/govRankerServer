@@ -14,7 +14,10 @@ exports.createArticleMethods = (app, db) => {
 
             const uuid = uuidV4.uuid();
 
-            const sql = `INSERT INTO article (entity_uuid, url, date, description, imageUrl, rating, title, creationDate) values ($1, '${url}', '${date}', '${description}', '${imageUrl}', ${rating}, '${title}', '${creationDate}')`;
+            const title2 = title.replace('\'', '\'\'')
+            const description2 = description.replace('\'', '\'\'')
+
+            const sql = `INSERT INTO article ("entity_uuid", "url", "date", "description", "image_url", "rating", "title", "creationDate") values ($1, '${url}', '${date}', '${description2}', '${imageUrl}', ${rating}, '${title2}', '${creationDate}')`;
 
             const result = await db.query(sql, [uuid]);
             console.log(
@@ -61,7 +64,7 @@ exports.createArticleMethods = (app, db) => {
             const { uuid, title, url, date, description, imageUrl, rating } =
                 req.body;
 
-            const sql = `update article set url='${url}', date='${date}', description='${description}', imageUrl='${imageUrl}', rating=${rating}, title='${title}' where entity_uuid='${uuid}'`;
+            const sql = `update article set url='${url}', date='${date}', description='${description}', image_url='${imageUrl}', rating=${rating}, title='${title}' where entity_uuid='${uuid}'`;
 
             await db.query(sql);
 
@@ -97,7 +100,7 @@ exports.createArticleMethods = (app, db) => {
 
             const uuid = uuidV4.uuid();
 
-            const sql = `INSERT INTO entity_to_article (entity_uuid, article_uuid, entity_type_id) values ($1, ${articleUUID}, ${entityTypeId})`;
+            const sql = `INSERT INTO entity_to_article ("entity_uuid", "article_uuid", entity_type_id) values ($1, '${articleUUID}', ${entityTypeId})`;
 
             const result = await db.query(sql, [uuid]);
 
@@ -130,7 +133,7 @@ exports.createArticleMethods = (app, db) => {
 
             const { entityUUID, articleUUID, entityTypeId } = req.body;
 
-            const sql = `INSERT INTO entity_to_article (entity_uuid, article_uuid, entity_type_id) values ($1, $2, ${entityTypeId})`;
+            const sql = `INSERT INTO entity_to_article ("entity_uuid", "article_uuid", "entity_type_id") values ($1, $2, ${entityTypeId})`;
 
             const result = await db.query(sql, [entityUUID, articleUUID]);
 
@@ -228,10 +231,9 @@ exports.createArticleMethods = (app, db) => {
         try {
             const partyMemberUUID = req.query.partyMemberUUID;
 
-            const sql = `select * from article where entity_uuid in (
-                select article_uuid from entity_to_article where entity_uuid = '${partyMemberUUID}'`;
+            const sql = `select * from article where entity_uuid in (select article_uuid from entity_to_article where entity_uuid = $1)`;
 
-            const result = await db.query(sql);
+            const result = await db.query(sql, [partyMemberUUID]);
 
             return res.json({
                 status: 200,
