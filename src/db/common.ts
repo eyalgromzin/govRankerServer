@@ -1,7 +1,7 @@
 exports.createCommonMethods = (app, db) => {
     app.get("/common/getAllPartyToGovernment", async (req, res) => {
         try {
-            const sql = `select * from partyToGovernment`;
+            const sql = `select * from party_to_government`;
             const result = await db.query(sql);
 
             res.json({
@@ -22,7 +22,7 @@ exports.createCommonMethods = (app, db) => {
 
     app.get("/common/getAllPartyMemberToParty", async (req, res) => {
         try {
-            const sql = `select * from partyMemberToParty`;
+            const sql = `select * from party_member_to_party`;
             const result = await db.query(sql);
 
             return res.json({
@@ -43,8 +43,8 @@ exports.createCommonMethods = (app, db) => {
 
     app.get("/common/getAllPartyMemberToGovernment", async (req, res) => {
         try {
-            const sql = `select * from partyMemberToGovernment`;
-            const result = db.query(sql);
+            const sql = `select * from party_member_to_government`;
+            const result = await db.query(sql);
 
             return res.json({
                 status: 200,
