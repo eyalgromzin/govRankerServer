@@ -1,3 +1,7 @@
+const { runCrawler } = require('./crawler')
+const {getDomain} = require('../utils')
+
+
 exports.createArticleMethods = (app, db) => {
     const uuidV4 = require("uuidv4");
 
@@ -45,6 +49,32 @@ exports.createArticleMethods = (app, db) => {
                     title,
                     creationDate,
                 },
+            });
+        } catch (err) {
+            console.log("failed to add article", err);
+
+            return res.json({
+                status: 400,
+                success: false,
+                error: err,
+            });
+        }
+    });
+
+    app.post("/article/crawlYnet", async (req, res) => {
+        try {
+            console.log("crawling url");
+
+            const {maxDepth, website} = req.body;
+
+            // runCrawler('https://www.ynet.co.il/home/0,7340,L-8,00.html', maxDepth)
+            const domain = getDomain('https://webscraper.io/test-sites')
+            runCrawler('https://webscraper.io/test-sites', maxDepth, domain)
+
+            return res.json({
+                status: 200,
+                success: true,
+                res: {},
             });
         } catch (err) {
             console.log("failed to add article", err);
