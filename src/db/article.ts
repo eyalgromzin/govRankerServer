@@ -1,6 +1,19 @@
-const { runCrawler } = require('./crawler')
-const {getDomain} = require('../utils')
+import { runCrawler } from './crawler'
+import {getDomain} from '../utils'
 
+export const getRecentlyAdded = async (db, numOfArticles) => {
+    const sql = `select * from article order by creation_date limit ${
+        numOfArticles + ""
+    }`;
+
+    const result = await db.query(sql);
+
+    return {
+        status: 200,
+        success: true,
+        data: result.rows,
+    }
+}
 
 exports.createArticleMethods = (app, db) => {
     const uuidV4 = require("uuidv4");
@@ -10,7 +23,7 @@ exports.createArticleMethods = (app, db) => {
         try {
             console.log("creating article");
 
-            const { title, url, date, description, imageUrl, rating } =
+            const { entityUUID, title, url, date, description, imageUrl, rating } =
                 req.body;
 
             const now = new Date();
@@ -21,7 +34,7 @@ exports.createArticleMethods = (app, db) => {
             const title2 = title.replace('\'', '\'\'')
             const description2 = description.replace('\'', '\'\'')
 
-            const sql = `INSERT INTO article ("entity_uuid", "url", "date", "description", "image_url", "rating", "title", "creationDate") values ($1, '${url}', '${date}', '${description2}', '${imageUrl}', ${rating}, '${title2}', '${creationDate}')`;
+            const sql = `INSERT INTO article ("entity_uuid", "url", "date", "description", "image_url", "rating", "title", "creation_date") values ($1, '${url}', '${date}', '${description2}', '${imageUrl}', ${rating}, '${title2}', '${creationDate}')`;
 
             const result = await db.query(sql, [uuid]);
             console.log(
@@ -65,11 +78,11 @@ exports.createArticleMethods = (app, db) => {
         try {
             console.log("crawling url");
 
-            const {maxDepth, website} = req.body;
+            const {maxDepth} = req.body;
 
             // runCrawler('https://www.ynet.co.il/home/0,7340,L-8,00.html', maxDepth)
-            const domain = getDomain('https://webscraper.io/test-sites')
-            runCrawler('https://webscraper.io/test-sites', maxDepth, domain)
+            const domain = getDomain('https://www.ynet.co.il/home/0,7340,L-8,00.html')
+            runCrawler(db, 'https://www.ynet.co.il/home/0,7340,L-8,00.html', maxDepth, domain)
 
             return res.json({
                 status: 200,
@@ -304,17 +317,8 @@ exports.createArticleMethods = (app, db) => {
     app.get("/article/getRecentlyAdded", async (req, res) => {
         try {
             const numOfArticles = req.query.numOfArticles;
-            const sql = `select * from article order by creation_date limit ${
-                numOfArticles + ""
-            }`;
-
-            const result = await db.query(sql);
-
-            return res.json({
-                status: 200,
-                success: true,
-                data: result.rows,
-            });
+            
+            return res.json(await getRecentlyAdded(db, numOfArticles))
         } catch (err) {
             console.log("failed to get article", err);
 

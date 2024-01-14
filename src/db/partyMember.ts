@@ -1,3 +1,14 @@
+export const getAllPartyMembers = async (db) => {
+    const sql = `select * from party_member`;
+    const result = await db.query(sql);
+
+    return {
+        status: 200,
+        success: true,
+        data: result.rows,
+    };
+}
+
 exports.createPartyMemberMethods = (app, db) => {
     const createPartyMemberAndPartyConnectionInDB = async (
         res,
@@ -114,14 +125,7 @@ exports.createPartyMemberMethods = (app, db) => {
 
     app.get("/partyMember/getAllPartyMembers", async (req, res) => {
         try {
-            const sql = `select * from party_member`;
-            const result = await db.query(sql);
-
-            return res.json({
-                status: 200,
-                success: true,
-                data: result.rows,
-            });
+            return res.json(await getAllPartyMembers(db))
         } catch (err) {
             console.log("failed to get party member ", err);
 

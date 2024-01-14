@@ -1,3 +1,14 @@
+export const getAllGovernments = async (db) => {
+    const sql = `select * from government`;
+    const result = await db.query(sql);
+
+    return {
+        status: 200,
+        success: true,
+        data: result.rows,
+    };
+};
+
 exports.createGovernmentMethods = (app, db) => {
     app.post("/government/update", async (req, res) => {
         try {
@@ -42,8 +53,8 @@ exports.createGovernmentMethods = (app, db) => {
 
             console.log("uuid", uuidV4);
 
-            const name2 = name.replace(/['"]/g, '');
-            const description2 = description.replace(/['"]/g, '');
+            const name2 = name.replace(/['"]/g, "");
+            const description2 = description.replace(/['"]/g, "");
 
             const sql = `INSERT INTO government ("entity_uuid", "name", "description", "image_url") values ($1, '${name2}', '${description2}', '${imageUrl}')`;
 
@@ -122,16 +133,9 @@ exports.createGovernmentMethods = (app, db) => {
         }
     });
 
-    app.get("/government/getAllGovernments",async (req, res) => {
+    app.get("/government/getAllGovernments", async (req, res) => {
         try {
-            const sql = `select * from government`;
-            const result = await db.query(sql);
-
-            return res.json({
-                status: 200,
-                success: true,
-                data: result.rows,
-            });
+            return res.json(await getAllGovernments(db));
         } catch (err) {
             console.log("failed to get article", err);
 

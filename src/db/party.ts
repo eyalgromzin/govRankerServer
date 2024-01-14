@@ -1,5 +1,16 @@
 const uuidV4 = require("uuidv4");
 
+export const getAllParties = async (db) => {
+    const sql = `select * from party`;
+        const result = await db.query(sql);
+
+        return{
+            status: 200,
+            success: true,
+            data: result.rows,
+        };
+} 
+
 exports.createPartyMethods = (app, db) => {
     const createPartyAndGovernmentConnectionInDB = async (
         res,
@@ -93,16 +104,11 @@ exports.createPartyMethods = (app, db) => {
         }
     });
 
+    
+
     app.get("/party/getAllParties", async (req, res) => {
         try {
-            const sql = `select * from party`;
-            const result = await db.query(sql);
-
-            return res.json({
-                status: 200,
-                success: true,
-                data: result.rows,
-            });
+            return  res.json(await getAllParties(db))
         } catch (err) {
             console.log("failed to get article", err);
 
