@@ -6,17 +6,40 @@ import Crawler from "crawler"
 import { getAllGovernments } from "./government";
 import { getAllParties } from "./party";
 import { getAllPartyMembers } from "./partyMember";
-import { getRecentlyAdded } from "./article";
+import { createArticle, getRecentlyAdded } from "./article";
+import { convertDatetimeToString } from "../utils";
+import { Government, Party, PartyMember } from "../models/models";
 
-const parseWebssiteAndAddToDB = (db, currentUrl, body, title, allGovernments, allParties, allPartyMembers) => {
+const parseWebsiteAndAddToDB = (db, url: string, body: string, title: string, allGovernments: Government[], allParties: Party[], allPartyMembers: PartyMember[]) => {
     //tests 
-        //get atrticle date - to know to which government to add the article
+    //get atrticle date - to know to which government to add the article
+    const cheerio = require('cheerio');
 
-        //check 
+    const startBody = body.indexOf("<html lang='he' >")
+    const endBody = body.indexOf("</html>")
+    const html = body.substring(startBody, endBody + '</html>'.length)
 
+    const $ = cheerio.load(html);
+    
+    const dateTimeString = $('meta[property="article:update_time"]').attr('content');
+    const dateTimeObject = new Date(dateTimeString);
+    const dbDate = convertDatetimeToString(dateTimeObject)
+
+    const description = $('meta[property="article:update_time"]').attr('content');
+    const imageUrl = $('meta[property="article:update_time"]').attr('content');
     let s = 5
     s += 1
     //check for specific words / something 
+    allPartyMembers.forEach((partyMemberI:PartyMember) => {
+        let isCreatedArticle = false
+
+        for (let keywordI of partyMemberI.search_keywords){
+            if (html.includes(keywordI)){
+                createArticle(db, title, url, dbDate, description, imageUrl, 0);
+            }
+        }
+    })
+
 
     //add to db - if all good 
 
@@ -39,7 +62,7 @@ export const runCrawler = async (db, url, maxDepth, domain) => {
                 try {
                     const currentDepth = res.options.depth || 1;
 
-                    if (currentDepth < maxDepth) {
+                    if (currentDepth <= maxDepth) {
                         // Follow links on the page to crawl further
                         const $ = res.$;
                         const body = res.body;
@@ -49,7 +72,7 @@ export const runCrawler = async (db, url, maxDepth, domain) => {
                         console.log(`scraping ${currentUrl}`);
 
                         if(currentUrl.includes('article/')){
-                            parseWebssiteAndAddToDB(db, currentUrl, body, title, allGovernments, allParties, allPartyMembers)
+                            parseWebsiteAndAddToDB(db, currentUrl, body, title, allGovernments, allParties, allPartyMembers)
                         }
 
                         $("a").each((index, element) => {

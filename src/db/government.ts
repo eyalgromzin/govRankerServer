@@ -1,12 +1,17 @@
+import { Government } from "../models/models";
+
+
+
+function convertDBGovernmentsToGovernments(result: any): Government[] {
+    throw new Error("Function not implemented.");
+}
+
 export const getAllGovernments = async (db) => {
     const sql = `select * from government`;
     const result = await db.query(sql);
 
-    return {
-        status: 200,
-        success: true,
-        data: result.rows,
-    };
+    const resGovernments:Government[] = convertDBGovernmentsToGovernments(result)
+    return resGovernments
 };
 
 exports.createGovernmentMethods = (app, db) => {

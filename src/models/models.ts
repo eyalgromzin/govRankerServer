@@ -17,6 +17,7 @@ export interface PartyMember {
     name: string,
     description: string,
     image_url: string, 
+    search_keywords: string,
 }
 
 export interface PartyToGovernment {

@@ -1,12 +1,16 @@
+import { PartyMember } from "../models/models";
+
+
+function convertDBPartyMembersToPartyMembers(dbPartyMembers: any): PartyMember[] {
+    return []
+}
+
 export const getAllPartyMembers = async (db) => {
     const sql = `select * from party_member`;
-    const result = await db.query(sql);
+    const dbPartyMembers = await db.query(sql);
 
-    return {
-        status: 200,
-        success: true,
-        data: result.rows,
-    };
+    const partyMembers = convertDBPartyMembersToPartyMembers(dbPartyMembers)
+    return partyMembers
 }
 
 exports.createPartyMemberMethods = (app, db) => {
@@ -125,7 +129,11 @@ exports.createPartyMemberMethods = (app, db) => {
 
     app.get("/partyMember/getAllPartyMembers", async (req, res) => {
         try {
-            return res.json(await getAllPartyMembers(db))
+            return res.json({
+                status: 200,
+                success: true,
+                data: await getAllPartyMembers(db)
+            })
         } catch (err) {
             console.log("failed to get party member ", err);
 

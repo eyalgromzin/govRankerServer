@@ -1,6 +1,8 @@
 import { runCrawler } from './crawler'
 import {getDomain} from '../utils'
 
+const uuidV4 = require("uuidv4");
+
 export const getRecentlyAdded = async (db, numOfArticles) => {
     const sql = `select * from article order by creation_date limit ${
         numOfArticles + ""
@@ -16,55 +18,15 @@ export const getRecentlyAdded = async (db, numOfArticles) => {
 }
 
 exports.createArticleMethods = (app, db) => {
-    const uuidV4 = require("uuidv4");
 
     // this is article for everyone
     app.post("/article/createArticle", async (req, res) => {
         try {
-            console.log("creating article");
+            const { entityUUID, title, url, date, description, imageUrl, rating } = req.body;
 
-            const { entityUUID, title, url, date, description, imageUrl, rating } =
-                req.body;
-
-            const now = new Date();
-            const creationDate = `${now.getFullYear()}${now.getMonth()}${now.getDay()}`;
-
-            const uuid = uuidV4.uuid();
-
-            const title2 = title.replace('\'', '\'\'')
-            const description2 = description.replace('\'', '\'\'')
-
-            const sql = `INSERT INTO article ("entity_uuid", "url", "date", "description", "image_url", "rating", "title", "creation_date") values ($1, '${url}', '${date}', '${description2}', '${imageUrl}', ${rating}, '${title2}', '${creationDate}')`;
-
-            const result = await db.query(sql, [uuid]);
-            console.log(
-                "added article",
-                uuid,
-                url,
-                date,
-                description,
-                imageUrl,
-                rating,
-                title,
-                creationDate
-            );
-
-            return res.json({
-                status: 200,
-                success: true,
-                res: {
-                    uuid,
-                    url,
-                    date,
-                    description,
-                    imageUrl,
-                    rating,
-                    title,
-                    creationDate,
-                },
-            });
+            return await createArticle(db, title, url, date, description, imageUrl, rating);
         } catch (err) {
-            console.log("failed to add article", err);
+            console.log("failed to create article", err);
 
             return res.json({
                 status: 400,
@@ -76,13 +38,14 @@ exports.createArticleMethods = (app, db) => {
 
     app.post("/article/crawlYnet", async (req, res) => {
         try {
-            console.log("crawling url");
+            const url = 'https://www.ynet.co.il/news/article/yokra13763496'
+            console.log(`crawling url ${url}`);
 
             const {maxDepth} = req.body;
 
             // runCrawler('https://www.ynet.co.il/home/0,7340,L-8,00.html', maxDepth)
             const domain = getDomain('https://www.ynet.co.il/home/0,7340,L-8,00.html')
-            runCrawler(db, 'https://www.ynet.co.il/home/0,7340,L-8,00.html', maxDepth, domain)
+            runCrawler(db, url, 1, domain)  //maxDepth
 
             return res.json({
                 status: 200,
@@ -90,7 +53,7 @@ exports.createArticleMethods = (app, db) => {
                 res: {},
             });
         } catch (err) {
-            console.log("failed to add article", err);
+            console.log("failed to crawl ynet", err);
 
             return res.json({
                 status: 400,
@@ -125,7 +88,7 @@ exports.createArticleMethods = (app, db) => {
                 },
             });
         } catch (err) {
-            console.log("failed to add article", err);
+            console.log("failed to update article", err);
 
             return res.json({
                 status: 400,
@@ -160,7 +123,7 @@ exports.createArticleMethods = (app, db) => {
                 res: { uuid, entityUUID, articleUUID, entityTypeId },
             });
         } catch (err) {
-            console.log("failed to add article", err);
+            console.log("failed to create entity to article", err);
 
             return res.json({
                 status: 400,
@@ -186,7 +149,7 @@ exports.createArticleMethods = (app, db) => {
                 res: result.rows,
             });
         } catch (err) {
-            console.log("failed to add article", err);
+            console.log("failed to connect article", err);
 
             return res.json({
                 status: 400,
@@ -332,8 +295,6 @@ exports.createArticleMethods = (app, db) => {
 
     app.post("/article/deleteArticle", (req, res) => {
         try {
-            const uuidV4 = require("uuidv4");
-
             console.log("deleting article ");
 
             const { articleUUID } = req.body;
@@ -376,3 +337,46 @@ exports.createArticleMethods = (app, db) => {
         }
     });
 };
+export const createArticle = async (db, title, url, date, description, imageUrl, rating) => {
+    console.log("creating article");
+
+    const now = new Date();
+    const creationDate = `${now.getFullYear()}${now.getMonth()}${now.getDay()}`;
+
+    const uuid = uuidV4.uuid();
+
+    const title2 = title.replace('\'', '\'\'');
+    const description2 = description.replace('\'', '\'\'');
+
+    const sql = `INSERT INTO article ("entity_uuid", "url", "date", "description", "image_url", "rating", "title", "creation_date") values ($1, '${url}', '${date}', '${description2}', '${imageUrl}', ${rating}, '${title2}', '${creationDate}')`;
+
+    const result = await db.query(sql, [uuid]);
+
+    console.log(
+        "added article",
+        uuid,
+        url,
+        date,
+        description,
+        imageUrl,
+        rating,
+        title,
+        creationDate
+    );
+
+    return {
+        status: 200,
+        success: true,
+        res: {
+            uuid,
+            url,
+            date,
+            description,
+            imageUrl,
+            rating,
+            title,
+            creationDate,
+        },
+    }
+}
+

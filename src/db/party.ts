@@ -1,14 +1,18 @@
+import { Party } from "../models/models";
+
 const uuidV4 = require("uuidv4");
+
+function convertDBPartiesToParties(dbParties: any): Party[] {
+    throw new Error("Function not implemented.");
+}
 
 export const getAllParties = async (db) => {
     const sql = `select * from party`;
-        const result = await db.query(sql);
+    const dbParties = await db.query(sql);
 
-        return{
-            status: 200,
-            success: true,
-            data: result.rows,
-        };
+    const resParties: Party[] = convertDBPartiesToParties(dbParties)
+
+    return resParties
 } 
 
 exports.createPartyMethods = (app, db) => {
@@ -108,7 +112,11 @@ exports.createPartyMethods = (app, db) => {
 
     app.get("/party/getAllParties", async (req, res) => {
         try {
-            return  res.json(await getAllParties(db))
+            return  res.json({
+                status: 200,
+                success: true,
+                data: await getAllParties(db),
+            }
         } catch (err) {
             console.log("failed to get article", err);
 
@@ -169,3 +177,5 @@ exports.createPartyMethods = (app, db) => {
         }
     });
 };
+
+
