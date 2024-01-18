@@ -116,7 +116,7 @@ exports.createPartyMethods = (app, db) => {
                 status: 200,
                 success: true,
                 data: await getAllParties(db),
-            }
+            })
         } catch (err) {
             console.log("failed to get article", err);
 
