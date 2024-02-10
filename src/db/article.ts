@@ -171,7 +171,7 @@ exports.createArticleMethods = (app, db) => {
                 data: results.rows,
             });
         } catch (err) {
-            console.log("failed to get article", err);
+            console.log("failed to get article1", err);
 
             return res.json({
                 status: 400,
@@ -267,7 +267,7 @@ exports.createArticleMethods = (app, db) => {
                 data: results.rows,
             });
         } catch (err) {
-            console.log("failed to get article", err);
+            console.log("failed to get article2", err);
 
             return res.json({
                 status: 400,
@@ -283,7 +283,7 @@ exports.createArticleMethods = (app, db) => {
             
             return res.json(await getRecentlyAdded(db, numOfArticles))
         } catch (err) {
-            console.log("failed to get article", err);
+            console.log("failed to get article3", err);
 
             return res.json({
                 status: 400,

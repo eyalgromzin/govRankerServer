@@ -142,7 +142,7 @@ exports.createGovernmentMethods = (app, db) => {
         try {
             return res.json(await getAllGovernments(db));
         } catch (err) {
-            console.log("failed to get article", err);
+            console.log("failed to get article6", err);
 
             return res.json({
                 status: 400,

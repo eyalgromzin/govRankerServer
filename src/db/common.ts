@@ -10,7 +10,7 @@ exports.createCommonMethods = (app, db) => {
                 data: result.rows,
             });
         } catch (err) {
-            console.log("failed to get article", err);
+            console.log("failed to get article4", err);
 
             return res.json({
                 status: 400,
@@ -31,7 +31,7 @@ exports.createCommonMethods = (app, db) => {
                 data: result.rows,
             });
         } catch (err) {
-            console.log("failed to get article", err);
+            console.log("failed to get article5", err);
 
             return res.json({
                 status: 400,
